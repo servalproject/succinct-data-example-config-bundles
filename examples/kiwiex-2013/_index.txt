@@ -7,11 +7,9 @@
 @description	Trialing the use of Serval Software for in field data collection during KiwiEx 2013			
 @version	2			
 @author	Corey Wallis (Serval Project)			
-@email	corey
-@servalproject.org			
+@email	corey@servalproject.org			
 @generated	2013/02/22			
-# below are a list of 
-@category definitions				
+# below are a list of @category definitions				
 #	id	title	description	icon
 @category	1	Disaster Assessment Forms - People	Collect information about people affected by the disaster / emergency	people_icon.png
 # below are a number of @form definitions				
