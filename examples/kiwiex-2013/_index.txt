@@ -1,0 +1,20 @@
+# This is a Serval SAM Config Index Template				
+# Lines starting with a # symbol are considered comments and are ignored				
+# Enter the required data into the fields below				
+# add as many @form lines as required				
+#				
+@title	KiwiEx 2013 - In Field Data Collection Trial			
+@description	Trialing the use of Serval Software for in field data collection during KiwiEx 2013			
+@version	2			
+@author	Corey Wallis (Serval Project)			
+@email	corey
+@servalproject.org			
+@generated	2013/02/22			
+# below are a list of 
+@category definitions				
+#	id	title	description	icon
+@category	1	Disaster Assessment Forms - People	Collect information about people affected by the disaster / emergency	people_icon.png
+# below are a number of @form definitions				
+#	id	category	title	file
+@form	1	1	Disaster Assessment Form: 1 A - People	nz_redcross_1a_people.xml
+@form 	2	1	Disaster Assessment Form: 1 B - Family Needs	nz_redcross_1b_family_needs.xml
