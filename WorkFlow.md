@@ -54,6 +54,11 @@ You then need to start "Serval SAM" on the phone and go into
 preferences and eventually select the file (or it will be selected
 automatically) and reload configuration.
 
+For some partly out of date instructions from the previous life of
+Serval SAM that may nonetheless be useful:
+
+http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalsam:main_page
+
 STATUS: This functionality is operational.
 
 BUG: Reloading configuration deletes all previous form instances, when
