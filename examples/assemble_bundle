@@ -5,7 +5,10 @@ mkdir -p tmp
 cd $1
 cp _index.txt ../tmp/
 cd forms ; zip -9 ../../tmp/forms.zip *
+cd ..
 cd icons ; zip -9 ../../tmp/icons.zip *
+cd ..
 cd succinct ; zip -9 ../../tmp/succinct.zip *
-cd ../../tmp
+cd ..
+cd ../tmp
 zip -9 ../${1}.succinct.config *
