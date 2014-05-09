@@ -9,8 +9,8 @@ supported by succinct data at this time.
 
 STATUS: This functionality is operational.
 
-Preparing ODK forms for use with Succinct Data
-----------------------------------------------
+Preparing ODK forms for use with Succinct Data (the hard way)
+-------------------------------------------------------------
 
 Forms are prepared by running xml2recipe over them, which will produce
 the recipe file and template file.
@@ -31,7 +31,11 @@ modification is never required.
 The recipe and template files should be copied to the succinct directory
 of your succinct data bundle marshalling area. You will also need to
 include a smac.dat file for SMAC to reference when compressing
-succinct data messages.  
+succinct data messages.
+
+If you wish for succinct data messages to be automatically sent by
+SMS, also add a .sms file containing the number to send to, e.g,
++61427679796.
 
 NOTE: The same version of smac.dat must be used for
 all forms, or else messages will be grossly misinterpretted by
@@ -39,6 +43,31 @@ succinct data resulting in gobbledygook.  Just use the version we have
 supplied to avoid problems.
 
 STATUS: This functionality is operational.
+
+Preparing ODK forms for use with Succinct Data (the easy way)
+-------------------------------------------------------------
+
+1. Create a directory to hold the set of forms you want to push out,
+e.g., operation-potato.
+
+2. Create forms/, icons/ and succinct/ subdirectories under that
+directory. 
+
+3. Copy the ODK forms you wish to push out into the forms/ directory.
+
+4. For any forms you wish to have SMSed automatically, create a file
+of the form succinct/formname.sms containing the number to send the
+SMS to as a single line of plain ASCII text.
+
+5. Copy _index.txt from another form bundle directory and edit it to
+suite.  BUG: We should create this for you.
+
+6. Run assemble_bundle giving it the path to the directory structure,
+e.g., assemble_bundle operation-potato
+
+7. You should now have a valid bundle, e.g.,
+operation-potato.succinct.config that can be copied to phones, as
+described below.
 
 Pushing form bundles to phones
 ------------------------------
