@@ -30,7 +30,7 @@ echo "@category	1	All forms	All forms	noicon.png" >> _index.txt
 formid=1
 for form in `cd ../$1/forms ; ls -1 *.xml | sed 's/.xml$//'`
 do
-  echo "@form	$formid	1	$form	$form" >> _index.txt
+  echo "@form	$formid	1	$form	${form}.xml" >> _index.txt
   formid=$(($formid + 1))
 done
 
