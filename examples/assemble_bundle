@@ -16,4 +16,23 @@ find ../forms/ -name "*.xml" -exec "${xml2recipe}" "{}" ";"
 zip -9 ../../tmp/succinct.zip *
 cd ..
 cd ../tmp
+
+# Create an _index.txt
+cat >_index.txt <<EOF
+@title	Auto-generated _index.txt
+@description	Auto-generated Succinct Data Forms Bundle
+@version	1
+@author	assemble_bundle script
+@email	support@servalproject.org
+EOF
+echo "@generated	"`date +%Y/%m/%d` >> _index.txt
+echo "@category	1	All forms	All forms	noicon.png" >> _index.txt
+formid=1
+for form in `cd ../$1/forms ; ls -1 *.xml | sed 's/.xml$//'`
+do
+  echo "@form	$formid	1	$form	$form" >> _index.txt
+  formid=$(($formid + 1))
+done
+
+
 zip -9 ../${1}.succinct.config *
