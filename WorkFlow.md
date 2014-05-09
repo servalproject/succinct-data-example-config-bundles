@@ -105,6 +105,10 @@ SMS or inReach depending on which is available.
 
 Transmission will be able to be automatic or manually controlled.
 
+BUG: For SMS the only safe path is to base64 the data, because Android does
+not provide a real binary API for SMS.  This means <=120 characters
+per succinct data message for now.  
+
 STATUS: This program has yet to be written.
 
 Receiving completed forms via SMS/inReach
@@ -116,20 +120,16 @@ arguments:
 
 smac recipe decompress <recipe directory> <succinct data file> <output file>
 
-To obtain the XML form, then a further call is required, and requires
-the matching XML template file:
-
-smac recipe rexml <output file from previous command> <template file>
-<output XML file>
+This expects there to be both a .recipe and .template file that
+correspond to the form represented in the succinct data message.  
 
 Succinct data messages encode the identity of the recipe within them,
 allowing the recipe decompression process to automatically determine
 the correct recipe, and hence ODK form specification to use when
 reconstituting a succinct data message.
 
-BUG: The above steps should happen in a single command, and the
-resulting XML should be written to a deterministically and uniquely
-named file based on the form and the form contents.
+Both a .stripped and a .xml file will be created for the reconstituted
+form.  These will be in a subdirectory corresponding to the cannonical
+form name (form name + "." + version).
 
-STATUS: Work in progress.  Many of the components exist, but are not
-yet integrated.
+STATUS: This functionality is operational.
