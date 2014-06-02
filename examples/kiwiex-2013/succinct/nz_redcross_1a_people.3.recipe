@@ -17,5 +17,5 @@ start:dateTime:0:0:0
 end:dateTime:0:0:0
 deviceid:string:0:0:0
 instanceID:uuid:0:0:0
-damaged_house:select1:0:0:0:yes,no
-usable_kitchen:select1:0:0:0:yes,no
+damaged_house:enum:0:0:0:yes,no
+usable_kitchen:enum:0:0:0:yes,no
