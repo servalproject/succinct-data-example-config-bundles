@@ -1,6 +1,11 @@
 <?php
 
 $spool_dir = "/tmp/succinctdata";
+$smac = "/Users/gardners/g/smac/smac";
+$recipe_dir = "";
+$sd_spool_dir = "";
+$sd_output_dir = "";
+$sd_passphrase_file = "";
 
 require_once 'api_password.php';
 
@@ -35,13 +40,24 @@ if (isset($results["messages"])) {
 	    echo "$name \n";
 	    echo "message = $text\n";
 
+	    // Write message
 	    if (!file_exists($dest_dir)) mkdir($dest_dir);
 	    chmod($dest_dir,0755);
 	    if (file_exists($name)) unlink($name);
-	    file_put_contents($name,text);  
+	    file_put_contents($name,text);
+
+	    // Call SMAC to import message in case it completes a message
+	    shell_exec("$smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file > $spool_dir/import.log");
+
+	    // XXX - Delete message from TextMagic server
 	  }
         }
-    }
+}
+
+// After receiving all new messages, do a succinct data import of any reassembled
+// messages
+shell_exec("$smac recipe decompress $recipe_dir $sd_spool_dir $sd_output_dir >$spool_dir/decompress.log");
+
 
 echo "<hr>End<p>\n";
 
