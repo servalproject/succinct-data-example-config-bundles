@@ -1,11 +1,12 @@
 <?php
 
-$spool_dir = "/tmp/succinctdata";
+$spool_dir = "/tmp/succinctdata/smsspool";
 $smac = "/Users/gardners/g/smac/smac";
-$recipe_dir = "";
-$sd_spool_dir = "";
-$sd_output_dir = "";
-$sd_passphrase_file = "";
+$statsdat_path = "/tmp/succinctdata";
+$recipe_dir = "/tmp/succinctdata/recipes";
+$sd_spool_dir = "/tmp/succinctdata/sdspool";
+$sd_output_dir = "/tmp/succinctdata/sdoutput";
+$sd_passphrase_file = "/tmp/succinctdata/passphrase";
 
 require_once 'api_password.php';
 
@@ -56,7 +57,7 @@ if (isset($results["messages"])) {
 
 // After receiving all new messages, do a succinct data import of any reassembled
 // messages
-shell_exec("$smac recipe decompress $recipe_dir $sd_spool_dir $sd_output_dir >$spool_dir/decompress.log");
+shell_exec("cd $statsdat_path ; $smac recipe decompress $recipe_dir $sd_spool_dir $sd_output_dir >$spool_dir/decompress.log");
 
 
 echo "<hr>End<p>\n";
