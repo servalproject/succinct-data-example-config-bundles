@@ -31,13 +31,13 @@ if (isset($results["messages"])) {
           $text = preg_replace("/[^A-Za-z0-9+=]/", '', $text);
           $msgid = $message["message_id"];
           $sender = $message["from"];
-          $prefix = substr($text,0,8);
+          $prefix = substr($text,0,10);
 	  $sender = preg_replace("/[^A-Za-z0-9 ]/", '', $sender);
           $dest_dir = "$spool_dir/from_$sender";
           $name="$dest_dir/$prefix";
 
 	  // Make sure prefix is at least 8 bytes
-	  if ( strlen($prefix) == 8 ) {
+	  if ( strlen($prefix) == 10 ) {
 	    echo "$name \n";
 	    echo "message = $text\n";
 
@@ -45,10 +45,11 @@ if (isset($results["messages"])) {
 	    if (!file_exists($dest_dir)) mkdir($dest_dir);
 	    chmod($dest_dir,0755);
 	    if (file_exists($name)) unlink($name);
-	    file_put_contents($name,text);
+	    file_put_contents($name,$text);
 
 	    // Call SMAC to import message in case it completes a message
-	    shell_exec("$smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file > $spool_dir/import.log");
+	    echo "cd $statsdat_path ; $smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file\n";
+	    shell_exec("cd $statsdat_path ; $smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file");
 
 	    // XXX - Delete message from TextMagic server
 	  }
@@ -57,6 +58,7 @@ if (isset($results["messages"])) {
 
 // After receiving all new messages, do a succinct data import of any reassembled
 // messages
+echo "<hr>SD Import<p>\n";
 shell_exec("cd $statsdat_path ; $smac recipe decompress $recipe_dir $sd_spool_dir $sd_output_dir >$spool_dir/decompress.log");
 
 
