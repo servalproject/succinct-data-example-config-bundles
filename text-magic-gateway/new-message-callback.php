@@ -1,5 +1,7 @@
 <?php
 
+$spool_dir = "/tmp/succinctdata";
+
 require_once 'api_password.php';
 
 require_once 'TextMagicAPI.php';
@@ -25,16 +27,16 @@ if (isset($results["messages"])) {
           $sender = $message["from"];
           $prefix = substr($text,0,8);
 	  $sender = preg_replace("/[^A-Za-z0-9 ]/", '', $sender);
-          $name="/tmp/succinctdata/from_$sender/$prefix";
+          $dest_dir = "$spool_dir/from_$sender";
+          $name="$dest_dir/$prefix";
 
 	  // Make sure prefix is at least 8 bytes
 	  if ( strlen($prefix) == 8 ) {
 	    echo "$name \n";
 	    echo "message = $text\n";
 
-	    if (!file_exists("/tmp/succinctdata/from_$sender"))
-	      mkdir("/tmp/succinctdata/from_$sender");
-	    chmod("/tmp/succinctdata/from_$sender",0755);
+	    if (!file_exists($dest_dir)) mkdir($dest_dir);
+	    chmod($dest_dir,0755);
 	    if (file_exists($name)) unlink($name);
 	    file_put_contents($name,text);  
 	  }
