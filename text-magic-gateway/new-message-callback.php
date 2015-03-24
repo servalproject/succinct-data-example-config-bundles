@@ -51,7 +51,9 @@ if (isset($results["messages"])) {
 	    echo "cd $statsdat_path ; $smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file\n";
 	    shell_exec("cd $statsdat_path ; $smac recipe decrypt $dest_dir $sd_spool_dir @$sd_passphrase_file");
 
-	    // XXX - Delete message from TextMagic server
+	    // Delete message from TextMagic server
+	    echo "msgid=$msgid\n";
+	    $api->deleteReply(array($msgid));
 	  }
         }
 }
