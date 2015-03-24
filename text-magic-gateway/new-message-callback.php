@@ -1,5 +1,7 @@
 <?php
 
+$pid = posix_getpid();
+
 $spool_dir = "/tmp/succinctdata/smsspool";
 $smac = "/Users/gardners/g/smac/smac";
 $statsdat_path = "/tmp/succinctdata";
@@ -7,6 +9,12 @@ $recipe_dir = "/tmp/succinctdata/recipes";
 $sd_spool_dir = "/tmp/succinctdata/sdspool";
 $sd_output_dir = "/tmp/succinctdata/sdoutput";
 $sd_passphrase_file = "/tmp/succinctdata/passphrase";
+$odk_aggregate_instance = "http://serval1.csem.flinders.edu.au:8080/ODKAggregate";
+
+$credentialsfile="/newpool/odk/succinctdata/odkcredentials.txt";
+$credentialsfile="/tmp/succinctdata/odkcredentials.txt";
+$cookiefile="/tmp/succinctdata/cookies.$pid";
+$curl="/opt/csw/bin/curl";
 
 require_once 'api_password.php';
 
@@ -62,6 +70,27 @@ if (isset($results["messages"])) {
 // messages
 echo "<hr>SD Import<p>\n";
 shell_exec("cd $statsdat_path ; $smac recipe decompress $recipe_dir $sd_spool_dir $sd_output_dir >$spool_dir/decompress.log");
+
+// Then push any XML files to the ODK Aggregate instance
+echo "<hr>Push to ODK Aggregate<p>\n";
+
+// log in to ODK Aggregate instance if required
+if (file_exists($cookiefile)) unlink($cookiefile);
+shell_exec("$curl -v --digest --cookie-jar $cookiefile -u `cat $credentialsfile` $odk_aggregate_instance/local_login.html >&/tmp/curl.log");
+
+foreach (new RecursiveDirectoryIterator($sd_output_dir) as $file) {
+    $filename=$file->getFilename();
+    echo "file $filename\n";
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    if ( $ext == "xml") {
+      echo "<p>Processing $filename\n";
+	shell_exec("$curl -v -b $cookiefile --cookie-jar $cookiefile  -F \"xml_submission_file=@$filename\" $odk_aggregate_instance/submission >&/tmp/curl2.log");
+    }
+}
+if (file_exists($cookiefile)) unlink($cookiefile);
+
+// XXX - Also push to Magpi server if required
+echo "<hr>Push to Magpi<p>\n";
 
 
 echo "<hr>End<p>\n";
