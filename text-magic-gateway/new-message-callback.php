@@ -11,10 +11,11 @@ $sd_output_dir = "/tmp/succinctdata/sdoutput";
 $sd_passphrase_file = "/tmp/succinctdata/passphrase";
 $odk_aggregate_instance = "http://serval1.csem.flinders.edu.au:8080/ODKAggregate";
 
-$credentialsfile="/newpool/odk/succinctdata/odkcredentials.txt";
+// $credentialsfile="/newpool/odk/succinctdata/odkcredentials.txt";
 $credentialsfile="/tmp/succinctdata/odkcredentials.txt";
 $cookiefile="/tmp/succinctdata/cookies.$pid";
-$curl="/opt/csw/bin/curl";
+// $curl="/opt/csw/bin/curl";
+$curl="/usr/bin/curl";
 
 require_once 'api_password.php';
 
@@ -78,13 +79,16 @@ echo "<hr>Push to ODK Aggregate<p>\n";
 if (file_exists($cookiefile)) unlink($cookiefile);
 shell_exec("$curl -v --digest --cookie-jar $cookiefile -u `cat $credentialsfile` $odk_aggregate_instance/local_login.html >&/tmp/curl.log");
 
-foreach (new RecursiveDirectoryIterator($sd_output_dir) as $file) {
-    $filename=$file->getFilename();
+$path = realpath($sd_output_dir);
+
+$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+foreach($objects as $file){
+  $filename=$file->getPathname(); // $file->getFilename();
     echo "file $filename\n";
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     if ( $ext == "xml") {
       echo "<p>Processing $filename\n";
-	shell_exec("$curl -v -b $cookiefile --cookie-jar $cookiefile  -F \"xml_submission_file=@$filename\" $odk_aggregate_instance/submission >&/tmp/curl2.log");
+      shell_exec("$curl -v -b $cookiefile --cookie-jar $cookiefile  -F \"xml_submission_file=@$filename\" $odk_aggregate_instance/submission");
     }
 }
 if (file_exists($cookiefile)) unlink($cookiefile);
