@@ -3,19 +3,30 @@
 $pid = posix_getpid();
 
 $spool_dir = "/tmp/succinctdata/smsspool";
-$smac = "/Users/gardners/g/smac/smac";
-$statsdat_path = "/tmp/succinctdata";
+$smac = "/newpool/servalwww/succinctdata/smac/smac";
+$statsdat_path = "/tmp/succinctdata/recipes";
 $recipe_dir = "/tmp/succinctdata/recipes";
 $sd_spool_dir = "/tmp/succinctdata/sdspool";
 $sd_output_dir = "/tmp/succinctdata/sdoutput";
 $sd_passphrase_file = "/tmp/succinctdata/passphrase";
 $odk_aggregate_instance = "http://serval1.csem.flinders.edu.au:8080/ODKAggregate";
 
-// $credentialsfile="/newpool/odk/succinctdata/odkcredentials.txt";
-$credentialsfile="/tmp/succinctdata/odkcredentials.txt";
+function mkdir_if_missing($dir) {
+
+  if (!file_exists($dir)) mkdir($dir);
+  return(0);
+
+}
+
+mkdir_if_missing($spool_dir);
+mkdir_if_missing($recipe_dir);
+mkdir_if_missing($sd_spool_dir);
+mkdir_if_missing($sd_output_dir);
+
+
+$credentialsfile="/newpool/odk/succinctdata/odkcredentials.txt";
 $cookiefile="/tmp/succinctdata/cookies.$pid";
-// $curl="/opt/csw/bin/curl";
-$curl="/usr/bin/curl";
+$curl="/opt/csw/bin/curl";
 
 require_once 'api_password.php';
 
@@ -62,7 +73,7 @@ if (isset($results["messages"])) {
 
 	    // Delete message from TextMagic server
 	    echo "msgid=$msgid\n";
-	    $api->deleteReply(array($msgid));
+//	    $api->deleteReply(array($msgid));
 	  }
         }
 }
@@ -77,18 +88,21 @@ echo "<hr>Push to ODK Aggregate<p>\n";
 
 // log in to ODK Aggregate instance if required
 if (file_exists($cookiefile)) unlink($cookiefile);
-shell_exec("$curl -v --digest --cookie-jar $cookiefile -u `cat $credentialsfile` $odk_aggregate_instance/local_login.html >&/tmp/curl.log");
+$credentials = file_get_contents($credentialsfile);
+$credentials = str_replace(PHP_EOL, '', $credentials);
+echo "<hr>ODK login.\n";
+shell_exec("$curl -v --digest --cookie-jar $cookiefile -u $credentials $odk_aggregate_instance/local_login.html 2>&1");
 
 $path = realpath($sd_output_dir);
 
 $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+
 foreach($objects as $file){
   $filename=$file->getPathname(); // $file->getFilename();
-    echo "file $filename\n";
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     if ( $ext == "xml") {
-      echo "<p>Processing $filename\n";
-      shell_exec("$curl -v -b $cookiefile --cookie-jar $cookiefile  -F \"xml_submission_file=@$filename\" $odk_aggregate_instance/submission");
+      echo "<p>Processing $filename<br>\n";
+      shell_exec("$curl -v -b $cookiefile --cookie-jar $cookiefile  -F \"xml_submission_file=@$filename\" $odk_aggregate_instance/submission 2>&1");
     }
 }
 if (file_exists($cookiefile)) unlink($cookiefile);
