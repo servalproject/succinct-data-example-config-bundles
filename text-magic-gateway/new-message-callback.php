@@ -73,7 +73,7 @@ if (isset($results["messages"])) {
 
 	    // Delete message from TextMagic server
 	    echo "msgid=$msgid\n";
-//	    $api->deleteReply(array($msgid));
+	    $api->deleteReply(array($msgid));
 	  }
         }
 }
